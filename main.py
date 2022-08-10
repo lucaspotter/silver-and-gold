@@ -177,5 +177,8 @@ def game_loop():
 			currentDay += 1
 
 
+# get the show on the road
+
+
 if __name__ == '__main__':
 	game_loop()

@@ -6,17 +6,23 @@ import random
 import decimal
 
 # set important numbers
-money = 0  # "what does the b in vitamin b stand for?" "BROKE"
 
+global money
 global copperPrice  # PYTHON MUST DIE
 global ironPrice
 global silverPrice
 global goldPrice
+global minedToday
+global pickLevel
 
+money = 0  # "what does the b in vitamin b stand for?" "BROKE"
 copperPrice = 1
 ironPrice = 2
 silverPrice = 3
 goldPrice = 4
+
+minedToday = False
+pickLevel = 1
 
 # it's the intro. there has to be some story or else the game wouldn't be fun!
 print("Welcome to the game!")
@@ -47,23 +53,35 @@ def market():
     silverChange = float(decimal.Decimal(random.randrange(-60, 60)) / 100)
     goldChange = float(decimal.Decimal(random.randrange(-80, 80)) / 100)
 
-	if copperPrice + copperChange < 1:
-		copperChange = 0
-		print("COPPER..."+str(copperChange)+"...NO CHANGE...")
-	else:
-		copperPrice += copperChange
-		print("COPPER..." + str(copperPrice) + "..." + str(copperChange) + " CHANGE...")
+    if copperPrice + copperChange < 1:
+        copperChange = 0
+        print("COPPER..." + str(copperChange) + "...NO CHANGE...")
+    elif copperPrice + copperChange > 1:
+        copperPrice += copperChange
+        print("COPPER..." + str(copperPrice) + "..." + str(copperChange) + " CHANGE...")
 
-	if ironPrice + ironChange < 2:
-		ironChange = 0
-		print("IRON..." + str(ironChange) + "...NO CHANGE...")
-	if silverPrice + silverChange < 3:
-		silverChange = 0
-		print("SILVER..." + str(silverChange) + "...NO CHANGE...")
-	if goldPrice + goldChange < 4:
-		goldChange = 0
-		print("GOLD..."+str(goldChange)+"...NO CHANGE...")
+    if ironPrice + ironChange < 1:
+        ironChange = 0
+        print("IRON..." + str(ironChange) + "...NO CHANGE...")
+    elif ironPrice + ironChange > 1:
+        ironPrice += ironChange
+        print("IRON..." + str(ironPrice) + "CHANGE OF " + str(ironChange) + "...")
 
+    if silverPrice + silverChange < 1:
+        silverChange = 0
+        print("SILVER..." + str(silverChange) + "...NO CHANGE...")
+    elif silverPrice + silverChange > 1:
+        silverPrice += silverChange
+        print("SILVER..." + str(silverPrice) + "CHANGE OF " + str(silverChange) + "...")
+
+    if goldPrice + goldChange < 1:
+        goldChange = 0
+        print("GOLD..." + str(goldChange) + "...NO CHANGE...")
+    elif goldPrice + goldChange > 1:
+        goldPrice += goldChange
+        print("GOLD..." + str(goldPrice) + "CHANGE OF " + str(goldChange) + "...")
+
+    return copperPrice, ironPrice, silverPrice, goldPrice
 
 
 '''
@@ -85,18 +103,62 @@ def buy():
     print("4. Gold")
     print("5. Go back to the shop")
     choice = input("What would you like to buy? ")
+
     if choice == "1":
+        print("The current price of copper is $" + str(copperPrice) + " a piece.")
         print("How much copper would you like to buy?")
         choice = input("? ")
-    elif choice == "2":
+        if int(choice) * copperPrice > money:
+            print("You don't have enough money.")
+            time.sleep(1)
+            buy()
+        else:
+            money -= choice * copperPrice
+            print("You have $" + str(money) + " left, and have bought " + str(choice) + " copper.")
+            time.sleep(1)
+            buy()
+
+    if choice == "2":
+        print("The current price of iron is $" + str(ironPrice) + " a piece.")
         print("How much iron would you like to buy?")
         choice = input("? ")
-    elif choice == "3":
+        if int(choice) * ironPrice > money:
+            print("You don't have enough money.")
+            time.sleep(1)
+            buy()
+        else:
+            money -= choice * ironPrice
+            print("You have $" + str(money) + " left, and have bought " + str(choice) + " iron.")
+            time.sleep(1)
+            buy()
+
+    if choice == "3":
+        print("The current price of silver is $" + str(silverPrice) + " a piece.")
         print("How much silver would you like to buy?")
         choice = input("? ")
-    elif choice == "4":
+        if int(choice) * silverPrice > money:
+            print("You don't have enough money.")
+            time.sleep(1)
+            buy()
+        else:
+            money -= choice * silverPrice
+            print("You have $" + str(money) + " left, and have bought " + str(choice) + " silver.")
+            time.sleep(1)
+            buy()
+
+    if choice == "4":
+        print("The current price of gold is $" + str(goldPrice) + " a piece.")
         print("How much gold would you like to buy?")
         choice = input("? ")
+        if int(choice) * goldPrice > money:
+            print("You don't have enough money.")
+        else:
+            money -= choice * goldPrice
+            print("You have $" + str(money) + " left, and have bought " + str(choice) + " gold.")
+            time.sleep(1)
+            buy()
+
+
     elif choice == "5":
         print("You go back.")
         time.sleep(1)
@@ -191,31 +253,37 @@ it can be done once per day. the amount of ore is random.
 
 
 def mine():
-    pass
+    print("You head on down to the mines...")
 
 
 # this is the main game loop. it will run until a win/failure condition is met.
+
+def main_menu():
+    print("1. Go to the shop")
+    print("2. Go to the mine")
+    print("3. Skip today")
+    choice = input("What would you like to do? ")
+    if choice == "1":
+        shop()
+    elif choice == "2":
+        if minedToday == True:
+            print("You have already mined today.")
+            time.sleep(1)
+        else:
+            minedToday = True
+            mine()
+    elif choice == "3":
+        print("You skip today.")
+        time.sleep(1)
+        currentDay += 1
 
 
 def game_loop():
     currentDay = 1
     while currentDay < 32:
         print("It is day " + str(currentDay))
-        time.sleep(1)
-        time.sleep(1)
-        print("1. Go to the shop")
-        print("2. Go to the mine")
-        print("3. Skip today")
-        choice = input("What would you like to do? ")
-        if choice == "1":
-            shop()
-        elif choice == "2":
-            mine()
-            currentDay += 1
-        elif choice == "3":
-            print("You skip today.")
-            time.sleep(1)
-            currentDay += 1
+        minedToday = False
+        main_menu()
 
 
 # get the show on the road
